@@ -277,4 +277,7 @@ class JcAudioPlayer {
         return jcPlayerService.getCurrentAudio();
     }
 
+    public JcPlayerService getJcPlayerService() {
+        return jcPlayerService;
+    }
 }

@@ -584,4 +584,8 @@ public class JcPlayerView extends LinearLayout implements
         }
     }
 
+    public JcPlayerService getJcAudioPlayer() {
+        return jcAudioPlayer.getJcPlayerService();
+    }
+
 }
