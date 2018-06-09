@@ -1,5 +1,6 @@
 package com.example.jean.jcplayersample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.jean.jcplayer.JcAudio;
+import com.example.jean.jcplayer.JcPlayerService;
 import com.example.jean.jcplayer.JcPlayerView;
 
 import com.example.jean.jcplayer.JcStatus;
@@ -22,11 +24,14 @@ public class MainActivity extends AppCompatActivity
     private JcPlayerView player;
     private RecyclerView recyclerView;
     private AudioAdapter audioAdapter;
+    JcPlayerService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        service = JcPlayerService.bgService;
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         player = (JcPlayerView) findViewById(R.id.jcplayer);
@@ -41,8 +46,12 @@ public class MainActivity extends AppCompatActivity
         //jcAudios.add(JcAudio.createFromFilePath("File directory audio", this.getFilesDir() + "/" + "CANTO DA GRAÚNA.mp3"));
         //jcAudios.add(JcAudio.createFromAssets("I am invalid audio", "aaa.mid")); // invalid assets file
         player.initPlaylist(jcAudios);
-        player.playAudio(player.getMyPlaylist().get(1));
 
+
+        if (null != service){
+
+            service.destroy();
+        }
 
 //        jcAudios.add(JcAudio.createFromFilePath("test", this.getFilesDir() + "/" + "13.mid"));
 //        jcAudios.add(JcAudio.createFromFilePath("test", this.getFilesDir() + "/" + "123123.mid")); // invalid file path
@@ -106,7 +115,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        player.kill();
+        //player.kill();
     }
 
     @Override

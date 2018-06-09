@@ -28,6 +28,8 @@ public class JcPlayerService extends Service implements
 
     private static final String TAG = JcPlayerService.class.getSimpleName();
 
+    public static JcPlayerService bgService;
+
     private final IBinder mBinder = new JcPlayerServiceBinder();
     private MediaPlayer mediaPlayer;
     private boolean isPlaying;
@@ -81,6 +83,7 @@ public class JcPlayerService extends Service implements
         }
     }
 
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -90,6 +93,7 @@ public class JcPlayerService extends Service implements
     @Override
     public void onCreate(){
         super.onCreate();
+        bgService = this;
     }
 
     public JcPlayerService() {
@@ -396,5 +400,13 @@ public class JcPlayerService extends Service implements
 
     public JcAudio getCurrentAudio() {
         return currentJcAudio;
+    }
+
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopSelf();
     }
 }
