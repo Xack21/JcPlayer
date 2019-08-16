@@ -28,9 +28,7 @@ class JcNotificationPlayerService implements JcPlayerView.JcPlayerViewServiceLis
     private static final int PLAY_ID = 2;
     private static final int PAUSE_ID = 3;
 
-    int notifyID = 1; 
-    String CHANNEL_ID = "my_channel_01";// The id of the channel. 
-    CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
+    int notifyID = 1;
     int importance = NotificationManager.IMPORTANCE_HIGH;
     
     private NotificationManager notificationManager;
