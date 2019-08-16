@@ -1,11 +1,13 @@
 package com.example.jean.jcplayer;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
@@ -27,9 +29,6 @@ class JcNotificationPlayerService implements JcPlayerView.JcPlayerViewServiceLis
     private static final int PREVIOUS_ID = 1;
     private static final int PLAY_ID = 2;
     private static final int PAUSE_ID = 3;
-
-    int notifyID = 1;
-    int importance = NotificationManager.IMPORTANCE_HIGH;
     
     private NotificationManager notificationManager;
     private Context context;
@@ -53,48 +52,58 @@ class JcNotificationPlayerService implements JcPlayerView.JcPlayerViewServiceLis
         if (notificationManager == null) {
             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         }
-        
+
+        notification = new NotificationCompat.Builder(context,"channel_1011")
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setSmallIcon(iconResourceResource)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), iconResourceResource))
+                .setContent(createNotificationPlayerView())
+                .setContentIntent(PendingIntent.getActivity(context, NOTIFICATION_ID, openUi, PendingIntent.FLAG_CANCEL_CURRENT))
+                .setCategory(Notification.CATEGORY_SOCIAL)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        String channelId = "channel_1011";
+        // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId,
+                    "App_channel_1011",
+                    NotificationManager.IMPORTANCE_LOW);
 
-              /* Create or update. */
-              NotificationChannel channel = new NotificationChannel("channel_0101",
-                  "God Minute Channel", 
-                  NotificationManager.IMPORTANCE_DEFAULT);
-            
-              notification = new Notification.Builder(context)
-                            .setVisibility(Notification.VISIBILITY_PUBLIC)
-                            .setSmallIcon(iconResourceResource)
-                            .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), iconResourceResource))
-                            .setContent(createNotificationPlayerView())
-                            .setContentIntent(PendingIntent.getActivity(context, NOTIFICATION_ID, openUi, PendingIntent.FLAG_CANCEL_CURRENT))
-                            .setCategory(Notification.CATEGORY_SOCIAL)
-                            .build();
-              mNotificationManager.createNotificationChannel(channel);
-         }
-        else {
+            channel.setSound(null,null);
+            channel.enableLights(false);
+            channel.setLightColor(Color.BLUE);
+            channel.enableVibration(false);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    notification = new Notification.Builder(context)
-                            .setVisibility(Notification.VISIBILITY_PUBLIC)
-                            .setSmallIcon(iconResourceResource)
-                            .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), iconResourceResource))
-                            .setContent(createNotificationPlayerView())
-                            .setContentIntent(PendingIntent.getActivity(context, NOTIFICATION_ID, openUi, PendingIntent.FLAG_CANCEL_CURRENT))
-                            .setCategory(Notification.CATEGORY_SOCIAL)
-                            .build();
-                    notificationManager.notify(NOTIFICATION_ID, notification);
-                } else {
-                    notificationCompat = new NotificationCompat.Builder(context)
-                            //TODO: Set to API below Build.VERSION.SDK_INT
-                            .setVisibility(Notification.VISIBILITY_PUBLIC)
-                            .setSmallIcon(iconResourceResource)
-                            .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), iconResourceResource))
-                            .setContent(createNotificationPlayerView())
-                            .setContentIntent(PendingIntent.getActivity(context, NOTIFICATION_ID, openUi, PendingIntent.FLAG_CANCEL_CURRENT))
-                            .setCategory(Notification.CATEGORY_SOCIAL);
-                    notificationManager.notify(NOTIFICATION_ID, notificationCompat.build());
-                }
+            notificationManager.createNotificationChannel(channel);
         }
+
+        notificationManager.notify(NOTIFICATION_ID,notification);
+
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            notification = new Notification.Builder(context)
+                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                    .setSmallIcon(iconResourceResource)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), iconResourceResource))
+                    .setContent(createNotificationPlayerView())
+                    .setContentIntent(PendingIntent.getActivity(context, NOTIFICATION_ID, openUi, PendingIntent.FLAG_CANCEL_CURRENT))
+                    .setCategory(Notification.CATEGORY_SOCIAL)
+                    .build();
+            notificationManager.notify(NOTIFICATION_ID, notification);
+        } else {
+            notificationCompat = new NotificationCompat.Builder(context)
+                    //TODO: Set to API below Build.VERSION.SDK_INT
+                    .setVisibility(Notification.VISIBILITY_PUBLIC)
+                    .setSmallIcon(iconResourceResource)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), iconResourceResource))
+                    .setContent(createNotificationPlayerView())
+                    .setContentIntent(PendingIntent.getActivity(context, NOTIFICATION_ID, openUi, PendingIntent.FLAG_CANCEL_CURRENT))
+                    .setCategory(Notification.CATEGORY_SOCIAL);
+            notificationManager.notify(NOTIFICATION_ID, notificationCompat.build());
+        }*/
+
     }
 
     public void updateNotification() {
